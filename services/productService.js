@@ -13,6 +13,13 @@ async function getProducts() {
   // 請實作此函式
   // 提示：使用 fetchProducts() 取得產品陣列
   // 回傳格式：{ products, count: 產品數量 }
+  const products = await fetchProducts();
+  const productList = Array.isArray(products) ? products : [];
+
+  return {
+    products: productList,
+    count: productList.length,
+  };
 }
 
 /**
@@ -24,6 +31,9 @@ async function getProductsByCategory(category) {
   // 請實作此函式
   // 提示：使用 fetchProducts() 取得所有產品後，篩選出符合 category 的產品
   // 回傳格式：篩選後的產品陣列
+  const products = await fetchProducts();
+  if (!Array.isArray(products)) return [];
+  return products.filter((item) => item.category === category);
 }
 
 /**
@@ -35,6 +45,12 @@ async function getProductById(productId) {
   // 請實作此函式
   // 提示：使用 fetchProducts() 取得所有產品後，找出 id 符合的產品
   // 若找不到，回傳 null
+   const products = await fetchProducts();
+  if (!Array.isArray(products)) return null;
+  const product = products.find((item) => item.id === productId);
+  return product || null;
+  const products = await fetchProducts();
+  return getAllCategories(products);
 }
 
 /**
@@ -44,6 +60,8 @@ async function getProductById(productId) {
 async function getCategories() {
   // 請實作此函式
   // 提示：使用 fetchProducts() 取得所有產品後，代入到 utils getAllCategories()
+  const products = await fetchProducts();
+  return getAllCategories(products);
 }
 
 /**
@@ -63,6 +81,25 @@ function displayProducts(products) {
   //    原價：NT$ 1,000
   //    售價：NT$ 800 (8折)
   // ----------------------------------------
+  if (!Array.isArray(products) || products.length === 0) {
+    console.log("目前無產品資訊");
+    return;
+  }
+
+  console.log("產品列表：");
+  console.log("----------------------------------------");
+
+  products.forEach((item, index) => {
+    const discount = getDiscountRate(item);
+    const originPrice = formatCurrency(item.origin_price);
+    const price = formatCurrency(item.price);
+
+    console.log(`${index + 1}. ${item.title}`);
+    console.log(`    分類：${item.category}`);
+    console.log(`    原價：${originPrice}`);
+    console.log(`    售價：${price} (${discount})`);
+    console.log("----------------------------------------");
+  });
 }
 
 module.exports = {
