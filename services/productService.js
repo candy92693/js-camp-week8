@@ -45,12 +45,8 @@ async function getProductById(productId) {
   // 請實作此函式
   // 提示：使用 fetchProducts() 取得所有產品後，找出 id 符合的產品
   // 若找不到，回傳 null
-   const products = await fetchProducts();
-  if (!Array.isArray(products)) return null;
-  const product = products.find((item) => item.id === productId);
-  return product || null;
   const products = await fetchProducts();
-  return getAllCategories(products);
+  return products.find((product)=>product.id===productId) || null;
 }
 
 /**
